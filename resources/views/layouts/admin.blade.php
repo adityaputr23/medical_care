@@ -7,7 +7,7 @@
     <title>@yield('title', 'Medika Admin - Dashboard')</title>
     
     <!-- CSS -->
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="/css/admin.css">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 <body x-data="{ sidebarOpen: false }">

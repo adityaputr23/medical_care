@@ -7,7 +7,7 @@
     <title>Masuk - MedikaCare</title>
 
     <!-- Custom App CSS -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="/css/app.css">
     
     <style>
         .auth-container {
