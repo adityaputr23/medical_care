@@ -5,6 +5,9 @@
         "build": "vite build",
         "dev": "vite"
     },
+    "allowScripts": {
+        "esbuild": true
+    },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/vite": "^4.0.0",
