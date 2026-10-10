@@ -33,7 +33,24 @@ if (!file_exists('/tmp/bootstrap/cache/services.php') && file_exists(__DIR__ . '
     @copy(__DIR__ . '/../bootstrap/cache/services.php', '/tmp/bootstrap/cache/services.php');
 }
 
-// 3. Set paths for Laravel
+// 3. Fallback SQLite database for serverless demo (copied to /tmp writable disk)
+if (!file_exists('/tmp/database.sqlite') && file_exists(__DIR__ . '/../database/database.sqlite')) {
+    @copy(__DIR__ . '/../database/database.sqlite', '/tmp/database.sqlite');
+}
+
+// 4. Default Environment Variables if not supplied in Vercel dashboard
+if (!getenv('APP_KEY') && empty($_ENV['APP_KEY'])) {
+    putenv('APP_KEY=base64:Y4/2HyxsAw3qTFR8VtdXF87NuacW25opOMORuqiMlA8=');
+    $_ENV['APP_KEY'] = 'base64:Y4/2HyxsAw3qTFR8VtdXF87NuacW25opOMORuqiMlA8=';
+}
+
+if (!getenv('DB_CONNECTION') && empty($_ENV['DB_CONNECTION'])) {
+    putenv('DB_CONNECTION=sqlite');
+    $_ENV['DB_CONNECTION'] = 'sqlite';
+    putenv('DB_DATABASE=/tmp/database.sqlite');
+    $_ENV['DB_DATABASE'] = '/tmp/database.sqlite';
+}
+
 putenv('LARAVEL_STORAGE_PATH=/tmp/storage');
 $_ENV['LARAVEL_STORAGE_PATH'] = '/tmp/storage';
 $_SERVER['LARAVEL_STORAGE_PATH'] = '/tmp/storage';
@@ -45,15 +62,15 @@ putenv('APP_ROUTES_CACHE=/tmp/bootstrap/cache/routes.php');
 putenv('APP_SERVICES_CACHE=/tmp/bootstrap/cache/services.php');
 putenv('VIEW_COMPILED_PATH=/tmp/storage/framework/views');
 
-// 4. Maintenance mode check
+// 5. Maintenance mode check
 if (file_exists($maintenance = '/tmp/storage/framework/maintenance.php')) {
     require $maintenance;
 }
 
-// 5. Register Composer Autoloader
+// 6. Register Composer Autoloader
 require __DIR__ . '/../vendor/autoload.php';
 
-// 6. Bootstrap Laravel and handle the request
+// 7. Bootstrap Laravel and handle the request
 /** @var Application $app */
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 
