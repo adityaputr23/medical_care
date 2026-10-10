@@ -1,6 +1,9 @@
 <?php
 
-// Forward Vercel requests to Laravel in serverless environment
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+
+define('LARAVEL_START', microtime(true));
 
 // 1. Create necessary /tmp storage directories (Vercel filesystem is read-only except /tmp)
 $storageDirs = [
@@ -42,5 +45,16 @@ putenv('APP_ROUTES_CACHE=/tmp/bootstrap/cache/routes.php');
 putenv('APP_SERVICES_CACHE=/tmp/bootstrap/cache/services.php');
 putenv('VIEW_COMPILED_PATH=/tmp/storage/framework/views');
 
-// 4. Delegate request handling to Laravel's public index.php
-require __DIR__ . '/../public/index.php';
+// 4. Maintenance mode check
+if (file_exists($maintenance = '/tmp/storage/framework/maintenance.php')) {
+    require $maintenance;
+}
+
+// 5. Register Composer Autoloader
+require __DIR__ . '/../vendor/autoload.php';
+
+// 6. Bootstrap Laravel and handle the request
+/** @var Application $app */
+$app = require_once __DIR__ . '/../bootstrap/app.php';
+
+$app->handleRequest(Request::capture());

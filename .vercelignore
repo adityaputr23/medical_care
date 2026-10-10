@@ -6,3 +6,6 @@
 .git
 .github
 phpunit.xml
+public/index.php
+public/.htaccess
+.htaccess
